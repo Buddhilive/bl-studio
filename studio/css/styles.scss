@@ -1,0 +1,79 @@
+#bl--studio-container {
+    background: #fff;
+    min-height: 75vh;
+    border-radius: 15px;
+}
+
+#mainSidebar {
+    min-width: 380px;
+}
+
+.bl-studio--controllers {
+    max-width: 400px;
+    display: block;
+    margin: 30px auto;
+    i {
+        font-size: 24px;
+    }
+    .mdl-grid {
+        /* background: red; */
+    }
+    button {
+        margin: 0px auto;
+        display: block;
+    }
+    bl-select {
+        margin: 0px auto;
+        display: block;
+        .bl-dropbtn {
+            text-align: left;
+            width: 400px;
+        }
+        .bl-dropdown-arrow {
+            float: right;
+        }
+        .bl-input {
+            width: 400px;
+        }
+        .bl-dropdown-content {
+            width: 400px;
+        }
+    }
+    #bl-spinner {
+        margin: 0px auto;
+        display: block;
+    }
+    .status-text {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 700;
+        &.processing {
+            animation: blink 1s linear infinite;
+        }
+    }
+}
+
+#bl-text-content {
+    text-align: center;
+    color: #757575;
+    margin: 20px;
+    border-top: 1px solid #757575;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: .25;
+    }
+    50% {
+        opacity: .5;
+    }
+    75% {
+        opacity: .75;
+    }
+    100% {
+        opacity: 1;
+    }
+}

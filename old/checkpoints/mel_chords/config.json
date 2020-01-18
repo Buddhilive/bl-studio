@@ -1,0 +1,12 @@
+{
+  "type": "MusicVAE",
+  "dataConverter": {
+    "type": "MelodyConverter",
+    "args": {
+      "numSteps": 32,
+      "minPitch": 21,
+      "maxPitch": 108
+    }
+  },
+  "chordEncoder": "TriadChordEncoder"
+}
