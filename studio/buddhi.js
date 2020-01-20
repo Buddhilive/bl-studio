@@ -19,18 +19,24 @@ let encodedMusic;
 let genSeq = [];
 let generatedMusic;
 let playSample;
+let downloadSample;
 let randomNum = 1;
 let theChords = ["D", "Bm", "G", "A"];
 const audioPlayer = initPlayerAndEffects();
 const melodySamplesArray = [Melody1, Melody2, Melody3, Melody4, Melody5];
 let melodySample = Melody1;
 const chordProgressionsArray = [
-    ['C, D, E, F', 0],
-    ['Dm, A, G, A', 1]
+    ['C, Am, F, G', 0],
+    ['D, Bm, G, A', 1],
+    ['F, Dm, Bb, C', 2],
+    ['G, Am, C, D', 3]
 ];
 
 const chordProgressions = [
-    ['C', 'D', 'E', 'F']
+    ['C', 'Am', 'F', 'G'],
+    ['D', 'Bm', 'G', 'A'],
+    ['F', 'Dm', 'Bb', 'C'],
+    ['G', 'Am', 'C', 'D']
 ]
 
 Promise.all([musicEngine.initialize(), modelEngine.initialize()]).then(() => {
@@ -57,15 +63,22 @@ btnShuffle.addEventListener('click', () => {
 
 //Save Generated Melody as MIDI
 btnSave.addEventListener('click', () => {
-    const midiB = mm.sequenceProtoToMidi(playSample);
-    const fileB = new Blob([midiB], { type: 'audio/midi' });
+    try {
+        const midiB = mm.sequenceProtoToMidi(playSample);
+        const fileB = new Blob([midiB], { type: 'audio/midi' });
 
-    const a = document.createElement('a');
-    const urlForFile = URL.createObjectURL(fileB);
-    a.href = urlForFile;
-    //a.innerHTML = "Download";
-    a.download = 'buddhilive_' + Date.now() + '.mid';
-    a.click();
+        const a = document.createElement('a');
+        const urlForFile = URL.createObjectURL(fileB);
+        a.href = urlForFile;
+        //a.innerHTML = "Download";
+        a.download = 'buddhilive_' + Date.now() + '.mid';
+        a.click();
+
+    } catch (error) {
+        statusText.innerHTML = "Oops! Something went wrong! Try generating again. Error: " + error;
+        btnSave.disabled = true;
+    }
+
 });
 
 //Play Generated Melody
@@ -103,7 +116,10 @@ btnGenerate.addEventListener('click', async() => {
         Promise.all([musicEngine.decode(encodedMusic, 1, [chords], 24).then(sample => {
             console.log("done", sample);
             genSeq.push(sample[0]);
-        })]).then(() => { playSample = concatenateSequences(genSeq) });
+        })]).then(() => {
+            downloadSample = playSample;
+            playSample = concatenateSequences(genSeq);
+        });
     });
 
 
@@ -164,17 +180,24 @@ function initPlayerAndEffects() {
 
 //concatenate Generated Samples
 function concatenateSequences(seqs) {
-    const seq = mm.sequences.clone(seqs[0]);
-    let numSteps = seqs[0].totalQuantizedSteps;
-    for (let i = 1; i < seqs.length; i++) {
-        const s = mm.sequences.clone(seqs[i]);
-        s.notes.forEach(note => {
-            note.quantizedStartStep += numSteps;
-            note.quantizedEndStep += numSteps;
-            seq.notes.push(note);
-        });
-        numSteps += s.totalQuantizedSteps;
+    try {
+        const seq = mm.sequences.clone(seqs[0]);
+        let numSteps = seqs[0].totalQuantizedSteps;
+        for (let i = 1; i < seqs.length; i++) {
+            const s = mm.sequences.clone(seqs[i]);
+            s.notes.forEach(note => {
+                note.quantizedStartStep += numSteps;
+                note.quantizedEndStep += numSteps;
+                seq.notes.push(note);
+            });
+            numSteps += s.totalQuantizedSteps;
+        }
+        seq.totalQuantizedSteps = numSteps;
+
+        return seq;
+
+    } catch (error) {
+        statusText.innerHTML = "Oops! Something went wrong! Try generating again. Error: " + error;
     }
-    seq.totalQuantizedSteps = numSteps;
-    return seq;
+
 }
