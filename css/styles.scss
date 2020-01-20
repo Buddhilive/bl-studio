@@ -1,7 +1,12 @@
+body {
+    background: #263238 !important;
+}
+
 #bl--studio-container {
     background: #fff;
     min-height: 75vh;
     border-radius: 15px;
+    max-width: 800px;
 }
 
 #mainSidebar {
