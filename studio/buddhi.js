@@ -1,9 +1,9 @@
 //Magenta models initializing
-/* const musicEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/multitrack_chords');
-const modelEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small'); */
+const musicEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/multitrack_chords');
+const modelEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small');
 
-const musicEngine = new mm.MusicVAE('checkpoints/multitrack_chords');
-const modelEngine = new mm.MusicVAE('checkpoints/mel_2bar_small');
+/* const musicEngine = new mm.MusicVAE('checkpoints/multitrack_chords');
+const modelEngine = new mm.MusicVAE('checkpoints/mel_2bar_small'); */
 
 //Initializing Elements Variables
 const chordProgSelector = document.querySelector('#bl-chordprogression');
