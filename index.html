@@ -20,10 +20,6 @@
     <script src="https://unpkg.com/buddhilive-elements@latest/dist/main.js"></script>
     <script defer src="studio/buddhi.js"></script>
 
-
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-
 </head>
 
 <body>
@@ -49,35 +45,16 @@
 
                     <div class="mdl-cell mdl-cell--8-col" id="bl--studio-container">
 
-                        <div class="bl-studio--controllers">
+                        <div class="featured-ad">
+                            <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+                            <!-- Featured -->
+                            <!-- <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-9435032914308988" data-ad-slot="9280073752"></ins>
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script> -->
+                        </div>
 
-                            <div class="mdl-grid">
-                                <bl-select id="bl-chordprogression" bl-title="Select a Chord Progression" bl-name="names" bl-search="true"></bl-select>
-                            </div>
-
-                            <div class="mdl-grid">
-                                <div class="mdl-cell mdl-cell--3-col">
-                                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--blue-500" id="btnShuffle" disabled>
-                                        <i class="material-icons">shuffle</i>
-                                    </button>
-                                </div>
-                                <div class="mdl-cell mdl-cell--3-col">
-                                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--green-500" id="btnGenerate" disabled>
-                                        <i class="material-icons">music_note</i>
-                                    </button>
-                                </div>
-                                <div class="mdl-cell mdl-cell--3-col">
-                                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" id="btnPlay" disabled>
-                                        <i class="material-icons">play_arrow</i>
-                                    </button>
-                                </div>
-                                <div class="mdl-cell mdl-cell--3-col">
-                                    <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--yellow-500" id="btnSave" disabled>
-                                        <i class="material-icons">save</i>
-                                    </button>
-                                </div>
-                            </div>
-
+                        <div class="bl-studio--controllers" id="bl-step1">
                             <div class="mdl-grid" id="bl-status-output">
                                 <div class="mdl-cell mdl-cell--12-col">
                                     <div class="mdl-spinner mdl-js-spinner is-active" id="bl-spinner"></div>
@@ -87,24 +64,114 @@
                                 </div>
                             </div>
 
+                            <h4>Step 01 - Select Chord Progression</h4>
+                            <p>Use your desired Chord Progression or continue with the default Chord Progression</p>
+                            <div class="mdl-grid">
+                                <div class="mdl-cell mdl-cell--3-col mdl-textfield mdl-js-textfield">
+                                    <input class="mdl-textfield__input chords" type="text" id="chord1">
+                                    <label class="mdl-textfield__label" for="chord1">F</label>
+                                </div>
+                                <div class="mdl-cell mdl-cell--3-col mdl-textfield mdl-js-textfield">
+                                    <input class="mdl-textfield__input chords" type="text" id="chord2">
+                                    <label class="mdl-textfield__label" for="chord2">Dm</label>
+                                </div>
+                                <div class="mdl-cell mdl-cell--3-col mdl-textfield mdl-js-textfield">
+                                    <input class="mdl-textfield__input chords" type="text" id="chord3">
+                                    <label class="mdl-textfield__label" for="chord3">Bb</label>
+                                </div>
+                                <div class="mdl-cell mdl-cell--3-col mdl-textfield mdl-js-textfield">
+                                    <input class="mdl-textfield__input chords" type="text" id="chord4">
+                                    <label class="mdl-textfield__label" for="chord4">C</label>
+                                </div>
+                            </div>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnProceed" disabled>
+                                <i class="material-icons">forward</i> Proceed
+                              </button>
+                            <div class="step-status-text1 bl-center"></div>
+                        </div>
 
+                        <hr>
+
+                        <div class="bl-studio--controllers disable-step" id="bl-step2">
+                            <h4>Step 02 - Generate Sample</h4>
+                            <p>In this step we are generating a sample sequence to start with. Just Click "Generate Sample"!</p>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnShuffle" disabled>
+                                <i class="material-icons">library_music</i> Generate Sample
+                              </button>
+                            <div class="step-status-text2 bl-center"></div>
+                        </div>
+
+                        <hr>
+
+                        <div class="bl-studio--controllers disable-step" id="bl-step3">
+                            <h4>Step 03 - Generate Music Sequences</h4>
+                            <p>In this step we are creating music tracks using the chord progression we selected. Click "Generate Music"!</p>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnGenerate" disabled>
+                                <i class="material-icons">music_note</i> Generate Music
+                              </button>
+                            <div class="step-status-text3 bl-center"></div>
+                        </div>
+
+                        <hr>
+
+                        <div class="bl-studio--controllers disable-step" id="bl-step4">
+                            <h4>Step 04 - Merge Sequences</h4>
+                            <p>In this step we are merging all generated sequences to one sequence. Click "Merge"!</p>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnMerge" disabled>
+                                <i class="material-icons">library_add</i> Merge
+                              </button>
+                            <div class="step-status-text4 bl-center"></div>
+                        </div>
+
+                        <hr>
+
+                        <div class="bl-studio--controllers disable-step" id="bl-step5">
+                            <h4>Step 05 - Play Music</h4>
+                            <p>Your music piece is created! Let's play and see.</p>
+                            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnPlay" disabled>
+                                <i class="material-icons">play_arrow</i> Play
+                              </button>
+                            <div class="step-status-text5 bl-center"></div>
+                        </div>
+
+                        <hr>
+
+                        <div class="bl-studio--controllers disable-step" id="bl-step6">
+                            <h4>Step 06 - Download Your Music</h4>
+                            <p>Ok, now you can download your piece of music as a MIDI file. Then you can import that MIDI file in to your favorite DAW and add your own creativity and make your masterpiece!</p>
+                            <div class="mdl-grid">
+                                <div class="mdl-cell mdl-cell--6-col">
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnSave" disabled>
+                                <i class="material-icons">save</i> Download
+                              </button>
+                                </div>
+                                <div class="mdl-cell mdl-cell--6-col">
+                                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect" id="btnNew" disabled>
+                                <i class="material-icons">fiber_new</i> New Music
+                              </button>
+                                </div>
+                            </div>
+                            <div class="step-status-text6 bl-center"></div>
                         </div>
 
                         <div class="mdl-grid" id="bl-text-content">
                             <div class="mdl-cell mdl-cell--12-col">
-                                <p>BL Studio – a Music Composing Tool Powered by AI. If you don’t have a idea for melody, Buddhi Live Studio will help you to have a music idea which you can develop with your own creativity.</p>
+                                <p>All Rights Reserved: Copyright © 2014 -
+                                    <script>
+                                        document.write(new Date().getFullYear());
+                                    </script> <a href="https://www.buddhilive.com">Buddhilive Developers</a></p>
                             </div>
                         </div>
 
                     </div>
 
                     <div id="mainSidebar" class="mdl-cell mdl-cell--4-col">
-                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
                         <!-- Sidebar-banner -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9435032914308988" data-ad-slot="6056255750" data-ad-format="auto"></ins>
+                        <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9435032914308988" data-ad-slot="6056255750" data-ad-format="auto"></ins>
                         <script>
                             (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
+                        </script> -->
                     </div>
 
                 </div>

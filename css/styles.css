@@ -1,11 +1,38 @@
+body {
+  background: #263238 !important;
+}
+
+.bl-center {
+  margin: 10px auto;
+  display: block;
+  text-align: center;
+}
+
+.disable-step h4 {
+  color: #c5c5cc;
+}
+
+.disable-step p {
+  color: #c5c5cc;
+}
+
 #bl--studio-container {
   background: #fff;
   min-height: 75vh;
   border-radius: 15px;
+  max-width: 800px;
 }
 
 #mainSidebar {
   min-width: 380px;
+}
+
+.featured-ad {
+  margin: 10px auto;
+  display: block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .bl-studio--controllers {
@@ -61,16 +88,16 @@
   line-height: 1;
 }
 
-.bl-studio--controllers .status-text.processing {
-  -webkit-animation: blink 1s linear infinite;
-          animation: blink 1s linear infinite;
-}
-
 #bl-text-content {
   text-align: center;
   color: #757575;
   margin: 20px;
   border-top: 1px solid #757575;
+}
+
+.processing {
+  -webkit-animation: blink 1s linear infinite;
+          animation: blink 1s linear infinite;
 }
 
 @-webkit-keyframes blink {

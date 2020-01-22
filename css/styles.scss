@@ -2,6 +2,21 @@ body {
     background: #263238 !important;
 }
 
+.bl-center {
+    margin: 10px auto;
+    display: block;
+    text-align: center;
+}
+
+.disable-step {
+    h4 {
+        color: #c5c5cc;
+    }
+    p {
+        color: #c5c5cc;
+    }
+}
+
 #bl--studio-container {
     background: #fff;
     min-height: 75vh;
@@ -11,6 +26,12 @@ body {
 
 #mainSidebar {
     min-width: 380px;
+}
+
+.featured-ad {
+    margin: 10px auto;
+    display: block;
+    width: fit-content;
 }
 
 .bl-studio--controllers {
@@ -53,9 +74,6 @@ body {
         font-size: 24px;
         font-weight: 700;
         line-height: 1;
-        &.processing {
-            animation: blink 1s linear infinite;
-        }
     }
 }
 
@@ -64,6 +82,10 @@ body {
     color: #757575;
     margin: 20px;
     border-top: 1px solid #757575;
+}
+
+.processing {
+    animation: blink 1s linear infinite;
 }
 
 @keyframes blink {
