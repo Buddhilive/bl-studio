@@ -1,9 +1,9 @@
 //Magenta models initializing
-/* const musicEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/multitrack_chords');
-const modelEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small'); */
+const musicEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/multitrack_chords');
+const modelEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small');
 
-const musicEngine = new mm.MusicVAE('checkpoints/multitrack_chords');
-const modelEngine = new mm.MusicVAE('checkpoints/mel_2bar_small');
+/* const musicEngine = new mm.MusicVAE('checkpoints/multitrack_chords');
+const modelEngine = new mm.MusicVAE('checkpoints/mel_2bar_small'); */
 
 //Initializing Elements Variables
 const chordProgSelector = document.querySelectorAll('.chords');
@@ -25,7 +25,7 @@ let generatedMusic;
 let playSample;
 let randomNum = 1;
 let theChords = [];
-const audioPlayer = initPlayerAndEffects();
+const audioPlayer = new mm.SoundFontPlayer('https://storage.googleapis.com/download.magenta.tensorflow.org/soundfonts_js/sgm_plus');
 const melodySamplesArray = [Melody1, Melody2, Melody3, Melody4, Melody5];
 let melodySample = Melody1;
 
@@ -119,14 +119,17 @@ This is the main function that generates melody
 async function generateMultiChords() {
     genSeq = [];
     try {
-        await theChords.map((chords, index) => {
-            console.log(chords + " at " + index);
-            musicEngine.decode(encodedMusic, 1, [chords], 24).then(sample => {
-                console.log("Done", sample);
-                genSeq.push(sample[0]);
+        Promise.all([displayMessage()]).then(() => {
+            theChords.map((chords, index) => {
+                console.log(chords + " at " + index);
+                musicEngine.decode(encodedMusic, 1, [chords], 24).then(sample => {
+                    console.log("Done", sample);
+                    genSeq.push(sample[0]);
+                });
             });
         });
 
+        document.querySelector('.step-status-text3').classList.remove('processing');
         document.querySelector('.step-status-text3').innerHTML = 'Music Sequences Generated!'
         stepSections[3].classList.remove('disable-step');
         stepSections[3].scrollIntoView();
@@ -147,7 +150,7 @@ async function mergeSequences() {
         for (let i = 1; i < genSeq.length; i++) {
             const seqZ = mm.sequences.clone(genSeq[i]);
             seqZ.notes.forEach((note, index) => {
-                if (note.pitch != 0) {
+                if (note.pitch > 10) {
                     note.quantizedStartStep += numSteps;
                     note.quantizedEndStep += numSteps;
                     tempseq.notes.push(note);
@@ -185,13 +188,15 @@ function refineSequences(sequenz) {
 
 //Play Generated Melody
 function playSequence() {
-    document.querySelector('.step-status-text5').innerHTML = 'Playing!'
+    document.querySelector('.step-status-text5').innerHTML = 'Playing...'
+    document.querySelector('.step-status-text5').classList.add('processing');
+    btnSave.disabled = false;
+    btnNew.disabled = false;
+    stepSections[5].classList.remove('disable-step');
     audioPlayer.start(playSample).then(() => {
         document.querySelector('.step-status-text5').innerHTML = 'Played!'
-        stepSections[5].classList.remove('disable-step');
+        document.querySelector('.step-status-text5').classList.remove('processing');
         stepSections[5].scrollIntoView();
-        btnSave.disabled = false;
-        btnNew.disabled = false;
     });
 }
 
@@ -230,6 +235,11 @@ function reinitializeTool() {
     btnNew.disabled = true;
 
     stepSections[0].scrollIntoView();
+}
+
+function displayMessage() {
+    document.querySelector('.step-status-text3').innerHTML = 'Music Sequences Generating!'
+    document.querySelector('.step-status-text3').classList.add('processing');
 }
 
 /* 
