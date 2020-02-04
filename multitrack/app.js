@@ -2,12 +2,11 @@
 const musicEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/multitrack_chords');
 const modelEngine = new mm.MusicVAE('https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_2bar_small');
 
-/* const musicEngine = new mm.MusicVAE('checkpoints/multitrack_chords');
-const modelEngine = new mm.MusicVAE('checkpoints/mel_2bar_small'); */
+/* const musicEngine = new mm.MusicVAE('../../checkpoints/multitrack_chords');
+const modelEngine = new mm.MusicVAE('../../checkpoints/mel_2bar_small'); */
 
 //Initializing Elements Variables
 const chordProgSelector = document.querySelectorAll('.chords');
-const statusSpinner = document.querySelector('#bl-spinner');
 const statusText = document.querySelector('.status-text');
 const btnShuffle = document.querySelector('#btnShuffle');
 const btnGenerate = document.querySelector('#btnGenerate');
@@ -16,7 +15,7 @@ const btnSave = document.querySelector('#btnSave');
 const btnMerge = document.querySelector('#btnMerge');
 const btnProceed = document.querySelector('#btnProceed');
 const btnNew = document.querySelector('#btnNew');
-const stepSections = document.querySelectorAll('.bl-studio--controllers');
+const stepSections = document.querySelectorAll('.bl-controllers--wrapper');
 
 //Global Variables
 let encodedMusic;
@@ -42,13 +41,10 @@ btnNew.onclick = reinitializeTool;
 
 Promise.all([musicEngine.initialize(), modelEngine.initialize()]).then(() => {
     console.log('Loaded!');
-    statusSpinner.style.visibility = "hidden";
-    statusText.innerHTML = "Ready!";
-    statusText.classList.remove('processing');
-    btnProceed.disabled = false;
-    chordProgSelector.forEach((elmnt) => {
-        elmnt.disabled = false;
-    });
+    statusText.style.display = 'none';
+    stepSections[0].style.display = 'block';
+    document.querySelector('.step-status-text1').innerHTML = 'Ready!';
+    document.querySelector('.bl-loading--img').style.display = 'none';
 });
 
 /* 
@@ -59,7 +55,6 @@ Here goes the main functions
 function setChordProgression() {
     chordProgSelector.forEach((elmnt, indx) => {
         elmnt.value = chordProgressions[indx];
-        elmnt.disabled = true;
     });
 }
 
@@ -82,12 +77,9 @@ function getChordProgression() {
     }
 
     if (theChords.length == 40) {
-        document.querySelector('.step-status-text1').innerHTML = 'Chord Progressions Set!'
-        stepSections[1].classList.remove('disable-step');
-        stepSections[1].scrollIntoView();
-        btnShuffle.disabled = false;
-        stepSections[0].classList.add('disable-step');
-        btnProceed.disabled = true;
+        //document.querySelector('.step-status-text2').innerHTML = 'Chord Progressions Set!'
+        stepSections[1].style.display = 'block';
+        stepSections[0].style.display = 'none';
     }
 }
 
@@ -100,12 +92,9 @@ function generateSample() {
             console.log("Encoding", sample);
             encodedMusic = sample;
         }).then(() => {
-            document.querySelector('.step-status-text2').innerHTML = 'Sample Generated!'
-            stepSections[2].classList.remove('disable-step');
-            stepSections[2].scrollIntoView();
-            btnGenerate.disabled = false;
-            stepSections[1].classList.add('disable-step');
-            btnShuffle.disabled = true;
+            //document.querySelector('.step-status-text3').innerHTML = 'Sample Generated!'
+            stepSections[2].style.display = 'block';
+            stepSections[1].style.display = 'none';
         });
     } catch (error) {
         document.querySelector('.step-status-text2').innerHTML = 'Oops something went wrong. Error: ' + error;
@@ -130,12 +119,9 @@ async function generateMultiChords() {
         });
 
         document.querySelector('.step-status-text3').classList.remove('processing');
-        document.querySelector('.step-status-text3').innerHTML = 'Music Sequences Generated!'
-        stepSections[3].classList.remove('disable-step');
-        stepSections[3].scrollIntoView();
-        btnMerge.disabled = false;
-        stepSections[2].classList.add('disable-step');
-        btnGenerate.disabled = true;
+        //document.querySelector('.step-status-text4').innerHTML = 'Music Sequences Generated!'
+        stepSections[3].style.display = 'block';
+        stepSections[2].style.display = 'none';
     } catch (error) {
         document.querySelector('.step-status-text3').innerHTML = 'Oops something went wrong. Error: ' + error;
     }
@@ -165,12 +151,9 @@ async function mergeSequences() {
 
         playSample = tempseq;
 
-        document.querySelector('.step-status-text4').innerHTML = 'Sequences Merged Successfully!'
-        stepSections[4].classList.remove('disable-step');
-        stepSections[4].scrollIntoView();
-        btnPlay.disabled = false;
-        stepSections[3].classList.add('disable-step');
-        btnMerge.disabled = true;
+        //document.querySelector('.step-status-text5').innerHTML = 'Sequences Merged Successfully!'
+        stepSections[4].style.display = 'block';
+        stepSections[3].style.display = 'none';
 
     } catch (error) {
         document.querySelector('.step-status-text4').innerHTML = 'Oops something went wrong. Error: ' + error;
@@ -188,16 +171,24 @@ function refineSequences(sequenz) {
 
 //Play Generated Melody
 function playSequence() {
-    document.querySelector('.step-status-text5').innerHTML = 'Playing...'
+    document.querySelector('.step-status-text5').innerHTML = 'Player Initializing...'
     document.querySelector('.step-status-text5').classList.add('processing');
-    btnSave.disabled = false;
-    btnNew.disabled = false;
-    stepSections[5].classList.remove('disable-step');
-    audioPlayer.start(playSample).then(() => {
-        document.querySelector('.step-status-text5').innerHTML = 'Played!'
-        document.querySelector('.step-status-text5').classList.remove('processing');
-        stepSections[5].scrollIntoView();
-    });
+    if (audioPlayer.isPlaying()) {
+        audioPlayer.stop();
+        btnPlay.innerHTML = '<i class="material-icons">play_arrow</i> Replay';
+        document.querySelector('.step-status-text5').innerHTML = 'Player Stoped';
+    } else {
+        audioPlayer.loadSamples(playSample).then(() => {
+            btnPlay.innerHTML = '<i class="material-icons">stop</i> Stop';
+            document.querySelector('.step-status-text5').innerHTML = 'Playing...';
+            audioPlayer.start(playSample).then(() => {
+                document.querySelector('.step-status-text5').innerHTML = 'Played!'
+                btnPlay.innerHTML = '<i class="material-icons">play_arrow</i> Replay';
+                stepSections[5].style.display = 'block';
+                stepSections[4].style.display = 'none';
+            });
+        });
+    }
 }
 
 //Save Generated Melody as MIDI
@@ -229,65 +220,17 @@ function reinitializeTool() {
             elmnt.classList.add('disable-step');
         }
     });
-    btnProceed.disabled = false;
-    btnPlay.disabled = true;
-    btnSave.disabled = true;
-    btnNew.disabled = true;
-
-    stepSections[0].scrollIntoView();
+    stepSections[0].style.display = 'block';
+    stepSections[5].style.display = 'none';
 }
 
 function displayMessage() {
-    document.querySelector('.step-status-text3').innerHTML = 'Music Sequences Generating!'
-    document.querySelector('.step-status-text3').classList.add('processing');
+    setTimeout(() => {
+        document.querySelector('.step-status-text3').innerHTML = 'Music Sequences Generating!'
+        document.querySelector('.step-status-text3').classList.add('processing');
+    }, 30000);
 }
 
-/* 
-These functions are taken from Magenta Example
- */
-
-//Initializing SoundFont Player
-function initPlayerAndEffects() {
-    const MAX_PAN = 0.2;
-    const MIN_DRUM = 35;
-    const MAX_DRUM = 81;
-
-    // Set up effects chain.
-    const globalCompressor = new mm.Player.tone.MultibandCompressor();
-    const globalReverb = new mm.Player.tone.Freeverb(0.25);
-    const globalLimiter = new mm.Player.tone.Limiter();
-    globalCompressor.connect(globalReverb);
-    globalReverb.connect(globalLimiter);
-    globalLimiter.connect(mm.Player.tone.Master);
-
-    // Set up per-program effects.
-    const programMap = new Map();
-    for (let i = 0; i < 128; i++) {
-        const programCompressor = new mm.Player.tone.Compressor();
-        const pan = 2 * MAX_PAN * Math.random() - MAX_PAN;
-        const programPanner = new mm.Player.tone.Panner(pan);
-        programMap.set(i, programCompressor);
-        programCompressor.connect(programPanner);
-        programPanner.connect(globalCompressor);
-    }
-
-    // Set up per-drum effects.
-    const drumMap = new Map();
-    for (let i = MIN_DRUM; i <= MAX_DRUM; i++) {
-        const drumCompressor = new mm.Player.tone.Compressor();
-        const pan = 2 * MAX_PAN * Math.random() - MAX_PAN;
-        const drumPanner = new mm.Player.tone.Panner(pan);
-        drumMap.set(i, drumCompressor);
-        drumCompressor.connect(drumPanner);
-        drumPanner.connect(globalCompressor);
-    }
-
-    // Set up SoundFont player.
-    const player = new mm.SoundFontPlayer(
-        'https://storage.googleapis.com/download.magenta.tensorflow.org/soundfonts_js/sgm_plus',
-        globalCompressor, programMap, drumMap);
-    return player;
-}
 
 window.onload = () => {
     setChordProgression();

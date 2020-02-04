@@ -1,0 +1,54 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/bachi.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@^1.2.3"></script>
+    <script defer src="app.js"></script>
+    <title>BL Studio 1.0</title>
+</head>
+
+<body>
+    <div class="bl-main--wrapper">
+        <div class="bl-studio--wrapper">
+            <div class="bl-back--button">
+                <i class="material-icons">home</i> Back to Home
+            </div>
+            <h1 class="bl-app--title">BL Studio Bachi</h1>
+            <img src="../../Buddhi_favicon.png" alt="" class="bl-loading--img">
+            <div class="status-text processing">Initializing...</div>
+            <!-- step one -->
+            <div class="bl-controllers--wrapper" id="bl-step1">
+                <h4 class="bl-step--title">Generate a Bach-style Harmony</h4>
+                <div class="bl-app--description">
+                    <p>Use your desired Chord Progression or continue with the default Chord Progression. <a href="https://www.buddhilive.com/p/chord-progressions.html" target="_blank">Learn More</a></p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnGenerate"><i class="material-icons">music_note</i> Generate</button>
+                    <button id="btnPlay"><i class="material-icons">play_circle_outline</i> Play</button>
+                    <button id="btnSave"><i class="material-icons">save_alt</i> Download</button>
+                </div>
+                <div class="step-status-text bl-center">hello</div>
+            </div>
+        </div>
+
+        <!-- sidebar -->
+        <div class="bl-sidebar--wrapper">
+            <div class="bl-info--card">
+                <p>All Rights Reserved. <br> Copyright © 2015 -
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    <br>
+                    <a href="https://www.buddhilive.com">Buddhilive Developers</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
