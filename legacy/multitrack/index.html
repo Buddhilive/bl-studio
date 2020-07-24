@@ -1,0 +1,169 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" href="/Buddhi_favicon.png" />
+    <link rel="stylesheet" href="/css/multitrack.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@magenta/music@^1.2.3"></script>
+    <script src="/js/melodybook.js"></script>
+    <script defer src="app.js"></script>
+    <title>BL Studio Multitrack</title>
+</head>
+
+<body>
+    <div class="bl-main--wrapper">
+        <div class="bl-studio--wrapper">
+            <a href="/">
+                <div class="bl-back--button">
+                    <i class="material-icons">home</i> Back to Home
+                </div>
+            </a>
+            <div class="featured-ad">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- Featured -->
+                <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-9435032914308988" data-ad-slot="9280073752"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            <h1 class="bl-app--title">BL Studio Multitrack</h1>
+            <img src="/assets/bl_studio_logo_black.png" alt="" class="bl-loading--img">
+            <div class="status-text processing">Initializing...</div>
+            <!-- step one -->
+            <div class="bl-controllers--wrapper" id="bl-step1">
+                <h4 class="bl-step--title">Step 01 - Select Chord Progression</h4>
+                <div class="bl-app--description">
+                    <p>Use your desired Chord Progression or continue with the default Chord Progression. <a href="https://www.buddhilive.com/p/chord-progressions.html" target="_blank">Learn More</a></p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <input class="bl-input chords" type="text" id="chord1" placeholder="F">
+
+                    <input class="bl-input chords" type="text" id="chord2" placeholder="Dm">
+
+                    <input class="bl-input chords" type="text" id="chord3" placeholder="Bb">
+
+                    <input class="bl-input chords" type="text" id="chord4" placeholder="C">
+
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnProceed">
+                <i class="material-icons">forward</i> Proceed
+            </button>
+                </div>
+                <div class="step-status-text1 bl-center">hello</div>
+            </div>
+
+            <!-- step two -->
+            <div class="bl-controllers--wrapper" id="bl-step2">
+                <h4 class="bl-step--title">Step 02 - Generate Sample</h4>
+                <div class="bl-app--description">
+                    <p>In this step we are generating a sample sequence to start with. Just Click "Generate Sample"!</p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnShuffle">
+                    <i class="material-icons">library_music</i> Generate Sample
+                  </button>
+                </div>
+                <div class="bl-button-wrapper">
+                    <div class="step-status-text2 bl-center"></div>
+                </div>
+            </div>
+
+            <!-- step three -->
+            <div class="bl-controllers--wrapper" id="bl-step3">
+                <h4 class="bl-step--title">Step 03 - Generate Music Sequences</h4>
+                <div class="bl-app--description">
+                    <p>In this step we are creating music tracks using the chord progression we selected. Click "Generate Music"! This process may take awhile.</p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnGenerate">
+                <i class="material-icons">music_note</i> Generate Music
+              </button>
+                </div>
+                <div class="bl-button-wrapper">
+                    <div class="step-status-text3 bl-center"></div>
+                </div>
+            </div>
+
+            <!-- step four -->
+            <div class="bl-controllers--wrapper" id="bl-step4">
+                <h4 class="bl-step--title">Step 04 - Merge Sequences</h4>
+                <div class="bl-app--description">
+                    <p>In this step we are merging all generated sequences to one sequence. Click "Merge"!</p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnMerge">
+                <i class="material-icons">library_add</i> Merge
+              </button>
+                </div>
+                <div class="bl-button-wrapper">
+                    <div class="step-status-text4 bl-center"></div>
+                </div>
+            </div>
+
+            <!-- step five -->
+            <div class="bl-controllers--wrapper" id="bl-step5">
+                <h4 class="bl-step--title">Step 05 - Play Music</h4>
+                <div class="bl-app--description">
+                    <p>Your music piece is created! Let's play and see. Wait until the music eds to download the MIDI file</p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnPlay">
+                <i class="material-icons">play_arrow</i> Play
+              </button>
+                </div>
+                <div class="bl-button-wrapper">
+                    <div class="step-status-text5 bl-center"></div>
+                </div>
+            </div>
+
+            <!-- step six -->
+            <div class="bl-controllers--wrapper" id="bl-step6">
+                <h4 class="bl-step--title">Step 06 - Download Your Music</h4>
+                <div class="bl-app--description">
+                    <p>Ok, now you can download your piece of music as a MIDI file. Then you can import that MIDI file in to your favorite DAW and add your own creativity and make your masterpiece!</p>
+                </div>
+                <div class="bl-button-wrapper">
+                    <button id="btnPlay">
+                        <i class="material-icons">play_arrow</i> Replay
+                      </button>
+                    <button id="btnSave">
+                <i class="material-icons">save_alt</i> Download
+              </button>
+
+                    <button id="btnNew">
+                <i class="material-icons">fiber_new</i> New Music
+              </button>
+                </div>
+                <div class="bl-button-wrapper">
+                    <div class="step-status-text6 bl-center"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- sidebar -->
+        <div class="bl-sidebar--wrapper">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- Sidebar-banner -->
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9435032914308988" data-ad-slot="6056255750" data-ad-format="auto"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <div class="bl-info--card">
+                <p>All Rights Reserved. <br> Copyright © 2015 -
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    <br>
+                    <a href="https://www.buddhilive.com">Buddhilive Developers</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

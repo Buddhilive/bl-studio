@@ -1,0 +1,134 @@
+body {
+  background: url(../assets/bl-studio-background.jpg) no-repeat center center fixed;
+  font-family: 'Roboto', sans-serif;
+}
+
+.bl-main--wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  /* transform: translate(-50%, -50%); */
+  width: 90%;
+  height: 80vh;
+  margin: auto;
+  border-radius: 15px;
+  background-color: rgba(33, 33, 33, 0.6);
+}
+
+.bl-main--wrapper .bl-app--description {
+  margin: 18px auto;
+  width: 80%;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.bl-main--wrapper h1 {
+  margin: 18px auto;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  color: #f7931e;
+}
+
+.bl-main--wrapper .bl-logo--img {
+  margin: 10px auto;
+  display: block;
+  width: 225px;
+  height: auto;
+}
+
+.bl-info--card {
+  margin: 10px;
+  display: table-cell;
+  border-radius: 15px;
+  padding: 0.3rem 0.8rem;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+
+.bl-info--card h3,
+.bl-info--card p {
+  margin: 3px;
+}
+
+.bl-info--card.bl-blue {
+  background: #01579B;
+  border: 3px solid #0288D1;
+  color: #81D4FA;
+}
+
+.bl-info--card.bl-blue:hover {
+  background: #0590fd;
+  color: black;
+}
+
+.bl-info--card.bl-red {
+  background: #B71C1C;
+  border: 3px solid #F44336;
+  color: #EF9A9A;
+}
+
+.bl-info--card.bl-red:hover {
+  background: #e55454;
+  color: black;
+}
+
+.bl-info--card.bl-yellow {
+  background: #F57F17;
+  border: 3px solid #FBC02D;
+  color: #FFF59D;
+}
+
+.bl-info--card.bl-yellow:hover {
+  background: #f9b579;
+  color: black;
+}
+
+.bl-info--card.bl-green {
+  background: #1B5E20;
+  border: 3px solid #388E3C;
+  color: #A5D6A7;
+}
+
+.bl-info--card.bl-green:hover {
+  background: #32ad3b;
+  color: black;
+}
+
+.bl-button-wrapper {
+  margin: 20px auto;
+  display: table;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  border-spacing: 10px;
+}
+
+.bl-copyright {
+  text-align: center;
+  position: absolute;
+  color: #ffffff;
+  bottom: 1;
+  left: 0;
+  right: 0;
+}
+
+.bl-copyright a {
+  color: #f7931e;
+}
+
+.material-icons {
+  vertical-align: middle;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  float: left;
+  margin-right: 5px;
+}
+/*# sourceMappingURL=index.css.map */
