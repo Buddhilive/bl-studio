@@ -6,11 +6,11 @@ import { TriosComponent } from './trios/trios.component';
 
 const routes: Routes = [
   {
-    path: 'dashboard',
+    path: '',
     component: DashboardComponent
   },
   {
-    path: 'trios',
+    path: 'melody',
     component: TriosComponent
   }
 ];

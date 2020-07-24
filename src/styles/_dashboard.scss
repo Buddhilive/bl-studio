@@ -1,0 +1,25 @@
+.dashboard {
+    margin: 30px auto;
+    &__card {
+        .coming-soon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        mat-card {
+            height: 360px;
+            cursor: pointer;
+            padding: 20px;
+            &:hover {
+                background-color: lighten($color: #424242, $amount: 10);
+            }
+        }
+        &--title {
+            margin: 20px auto;
+            text-transform: uppercase;
+        }
+        &--image {
+            width: 100%;
+        }
+    }
+}

@@ -1,4 +1,76 @@
-<p>{{chords}}</p>
-<button (click)='playMusic()'>play</button>
-<button (click)='generateSamples()'>Generating</button>
-<button (click)='downloadMIDI()'>Download</button>
+<div class="container improvrnn">
+    <div class="row improvrnn__loader" *ngIf="!readyState">
+        <div class="col-md-12">
+            <mat-spinner></mat-spinner> Intializing Model...
+        </div>
+    </div>
+    <p>Chord Progression</p>
+    <div class="row improvrnn__chords" #chordProgression>
+        <div class="col-md-3" *ngFor="let chords of BL_DEFAULT_CHORDS; let i = index">
+            <mat-form-field class="improvrnn__chords--key" appearance="fill">
+                <mat-label>{{i + 1}}</mat-label>
+                <input matInput placeholder="{{chords}}" value="{{chords}}" (change)="checkChord($event.target.value)">
+            </mat-form-field>
+        </div>
+    </div>
+    <mat-hint [ngStyle]="{color: hintColor}" class="improvrnn__chords--error">{{errorHint}}</mat-hint>
+    <div class="row improvrnn__settings">
+        <div class="col-md-12 improvrnn__settings--slider">
+            Variation: {{BL_DEFAULT_VARIATION}}
+            <mat-slider min="0.1" max="1" step="0.1" [(value)]="BL_DEFAULT_VARIATION" color="primary"></mat-slider>
+        </div>
+    </div>
+    <div class="row improvrnn__settings">
+        <div class="col-md-12 improvrnn__settings--slider">
+            Steps per Quarter: {{BL_DEFAULT_STEPS}}
+            <mat-slider min="1" max="8" step="1" [(value)]="BL_DEFAULT_STEPS" color="primary"></mat-slider>
+        </div>
+    </div>
+    <div class="row improvrnn__settings">
+        <div class="col-md-6">
+            <mat-form-field appearance="fill" class="improvrnn__settings--num">
+                <mat-label>Bars: {{BL_DEFAULT_BARS/4}}</mat-label>
+                <mat-select [(value)]="BL_DEFAULT_BARS">
+                    <mat-option value="8">2</mat-option>
+                    <mat-option value="16">4</mat-option>
+                    <mat-option value="32">8</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="improvrnn__settings--num" appearance="fill">
+                <mat-label>Tempo: {{BL_DEFAULT_QPM}}</mat-label>
+                <input type="number" matInput (change)="getTempo($event.target.value)" (value)="BL_DEFAULT_QPM">
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row improvrnn__player">
+        <div class="col-md-12">
+            <mat-card>
+                <canvas class="improvrnn__player--canvas" #pianoRollCanvas></canvas>
+            </mat-card>
+        </div>
+    </div>
+    <div class="row improvrnn__controls">
+        <div class="col-md-3">
+            <button mat-fab color="accent" (click)="playMusic()" [disabled]="buttonActive" matTooltip="Play Music" matTooltipClass="tooltip-class">
+            <mat-icon>{{playButtonText}}</mat-icon>
+          </button>
+        </div>
+        <div class="col-md-3">
+            <button mat-fab color="warn" (click)="stopMusic()" [disabled]="buttonActive" matTooltip="Stop Music" matTooltipClass="tooltip-class">
+            <mat-icon>stop</mat-icon>
+          </button>
+        </div>
+        <div class="col-md-3">
+            <button mat-fab color="primary" (click)='generateSamples()' [disabled]="!readyState" matTooltip="Generate Melody" matTooltipClass="tooltip-class">
+            <mat-icon>music_note</mat-icon>
+          </button>
+        </div>
+        <div class="col-md-3">
+            <button mat-fab color="primary" (click)='downloadMIDI()' [disabled]="buttonActive" matTooltip="Download MIDI" matTooltipClass="tooltip-class">
+            <mat-icon>cloud_download</mat-icon>
+          </button>
+        </div>
+    </div>
+</div>

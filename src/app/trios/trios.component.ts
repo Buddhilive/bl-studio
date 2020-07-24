@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as magenta from '@magenta/music/es6';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PianoRollCanvasVisualizer } from '@magenta/music/es6';
+import { GlobalVariables } from '../shared/global.variables';
 @Component({
   selector: 'app-trios',
   templateUrl: './trios.component.html',
@@ -8,75 +10,106 @@ import * as magenta from '@magenta/music/es6';
 })
 export class TriosComponent implements OnInit {
 
-  model = new magenta.MusicVAE('assets/checkpoints/groovae_4bar');
-  modelRnn = new magenta.MusicRNN('https://storage.googleapis.com/magentadata/js/checkpoints/music_rnn/chord_pitches_improv');
-  //audioplayer = new mm.SoundFontPlayer('https://storage.googleapis.com/download.magenta.tensorflow.org/soundfonts_js/sgm_plus');
-  player = new magenta.Player();
-  sampleGenerated: any;
-  chords = ['Bm', 'Bbm', 'Gb7', 'F7', 'Ab', 'Ab7', 'G7', 'Gb7', 'F7', 'Bb7', 'Eb7', 'AM7'];
-  Melody1 = {
-    notes: [
-      { pitch: 60, quantizedStartStep: 0, quantizedEndStep: 2 },
-      { pitch: 60, quantizedStartStep: 2, quantizedEndStep: 4 },
-      { pitch: 67, quantizedStartStep: 4, quantizedEndStep: 6 },
-      { pitch: 67, quantizedStartStep: 6, quantizedEndStep: 8 },
-      { pitch: 69, quantizedStartStep: 8, quantizedEndStep: 10 },
-      { pitch: 69, quantizedStartStep: 10, quantizedEndStep: 12 },
-      { pitch: 67, quantizedStartStep: 12, quantizedEndStep: 16 },
-      { pitch: 65, quantizedStartStep: 16, quantizedEndStep: 18 },
-      { pitch: 65, quantizedStartStep: 18, quantizedEndStep: 20 },
-      { pitch: 64, quantizedStartStep: 20, quantizedEndStep: 22 },
-      { pitch: 64, quantizedStartStep: 22, quantizedEndStep: 24 },
-      { pitch: 62, quantizedStartStep: 24, quantizedEndStep: 26 },
-      { pitch: 62, quantizedStartStep: 26, quantizedEndStep: 28 },
-      { pitch: 60, quantizedStartStep: 28, quantizedEndStep: 32 }
-    ],
-    quantizationInfo: { stepsPerQuarter: 1 },
-    tempos: [{ time: 0, qpm: 120 }],
-    totalQuantizedSteps: 32
-  };
+  @ViewChild('chordProgression', { static: false }) chordProgression: ElementRef;
+  @ViewChild('pianoRollCanvas', { static: false }) pianoRollCanvas: ElementRef;
 
-  constructor() { }
+  modelRnn = new magenta.MusicRNN(this.globalVar.MODEL_IMPROV_RNN);
+  sampleGenerated: any;
+  BL_DEFAULT_QPM = 120;
+  BL_DEFAULT_STEPS = 4;
+  BL_DEFAULT_BARS = 16;
+  BL_DEFAULT_VARIATION = 0.5;
+  BL_DEFAULT_CHORDS = ['C', 'G', 'Am', 'F'];
+  BL_DEFAULT_MELODY = {
+    quantizationInfo: { stepsPerQuarter: this.BL_DEFAULT_STEPS },
+    notes: [],
+    tempos: [{ time: 0, qpm: this.BL_DEFAULT_QPM }],
+    totalQuantizedSteps: 1
+  };
+  BLS_CONFIG = {
+    noteRGB: '73, 109, 145',
+    activeNoteRGB: '255, 111, 0',
+  };
+  BLS_VISUALIZER = new PianoRollCanvasVisualizer(
+    this.BL_DEFAULT_MELODY, document.createElement('canvas'), this.BLS_CONFIG
+  );
+  playButtonText = 'play_arrow';
+  player = new magenta.Player(false, {
+    run: (note) => {
+      this.BLS_VISUALIZER.redraw(note);
+    },
+    stop: () => { }
+  });
+  buttonActive = true;
+  readyState = false;
+  errorHint: any;
+  hintColor = '#ff0000';
+
+  constructor(
+    private _snackBar: MatSnackBar,
+    private globalVar: GlobalVariables
+  ) { }
 
   ngOnInit() {
-    this.model.initialize();
-    this.modelRnn.initialize();
-    //this.player.start(this.Melody1);
+    this.modelRnn.initialize().then(() => {
+      this.openSnackBar('🎶 Model Initialized!');
+      this.readyState = true;
+    });
   }
 
   playMusic() {
-    console.log('generating music');
-    this.player.stop();
-    this.model.sample(1)
-      .then(samples => {
-        console.log(samples);
-        this.sampleGenerated = samples[0];
-        this.player.resumeContext();
-        this.player.start(samples[0]);
+    this.player.resumeContext();
+    if (this.player.getPlayState() === 'started') {
+      this.player.pause();
+      this.playButtonText = 'play_arrow';
+    } else if (this.player.getPlayState() === 'paused') {
+      this.player.resume();
+      this.playButtonText = 'pause';
+    } else if (this.player.getPlayState() === 'stopped') {
+      this.player.start(this.sampleGenerated, this.BL_DEFAULT_QPM).then(() => {
+        this.playButtonText = 'play_arrow';
       });
+      this.playButtonText = 'pause';
+    }
+    //console.log(this.player.getPlayState());
+  }
+
+  stopMusic() {
+    this.playButtonText = 'play_arrow';
+    this.player.stop();
   }
 
   async generateSamples() {
     try {
-      console.log('generating music');
-      const seq = {
-        quantizationInfo: { stepsPerQuarter: 1 },
-        notes: [],
-        totalQuantizedSteps: 1
-      };
+      this.buttonActive = true;
+      this.openSnackBar('🎹 Music Generation Started!');
+      const chordsEL = this.chordProgression.nativeElement.querySelectorAll('.improvrnn__chords--key');
+      chordsEL.forEach((element, elIndex) => {
+        this.BL_DEFAULT_CHORDS[elIndex] = element.querySelector('input').value;
+      });
+      console.log(this.BL_DEFAULT_MELODY.tempos[0].qpm);
+      console.log(this.BL_DEFAULT_CHORDS, this.BL_DEFAULT_QPM, this.BL_DEFAULT_BARS, this.BL_DEFAULT_STEPS, this.BL_DEFAULT_VARIATION);
       this.player.stop();
-      const qns = magenta.sequences.quantizeNoteSequence(this.Melody1, 4);
-      this.sampleGenerated = await this.modelRnn.continueSequence(seq, 64, 0.9, ['CMaj7', 'GMaj7', 'AMaj7', 'FMaj7']);
+      this.sampleGenerated = await this.modelRnn.continueSequence(
+        this.BL_DEFAULT_MELODY, this.BL_DEFAULT_STEPS * this.BL_DEFAULT_BARS, this.BL_DEFAULT_VARIATION, this.BL_DEFAULT_CHORDS
+      );
+      this.sampleGenerated = magenta.sequences.quantizeNoteSequence(
+        magenta.sequences.unquantizeSequence(this.sampleGenerated, this.BL_DEFAULT_QPM),
+        this.BL_DEFAULT_STEPS
+      );
       console.log(this.sampleGenerated);
-      this.player.resumeContext();
-      this.player.start(this.sampleGenerated);
+      this.BLS_VISUALIZER = new PianoRollCanvasVisualizer(
+        this.sampleGenerated, this.pianoRollCanvas.nativeElement, this.BLS_CONFIG
+      );
+      this.buttonActive = false;
+      this.openSnackBar('🎹 Music Generated!');
     } catch (error) {
       console.log(error);
     }
   }
 
   downloadMIDI() {
-    console.log(magenta.sequences.isQuantizedSequence(this.sampleGenerated));
+    this.openSnackBar('Downloaded!');
     let sampleSeq = this.sampleGenerated;
     if (!magenta.sequences.isQuantizedSequence(this.sampleGenerated)) {
       sampleSeq = magenta.sequences.quantizeNoteSequence(this.sampleGenerated, 1);
@@ -89,6 +122,35 @@ export class TriosComponent implements OnInit {
     a.href = urlForFile;
     a.download = 'buddhilive_' + Date.now() + '.mid';
     a.click();
+  }
+
+  openSnackBar(message: string, durationTime = 2000) {
+    this._snackBar.open(message, 'OK', {
+      duration: durationTime,
+      panelClass: 'message-snackbar',
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+    });
+  }
+
+  checkChord(theChord) {
+    console.log(theChord);
+    if (!theChord) {
+      this.readyState = false;
+      this.errorHint = '⛔ No Chord Provided!';
+    }
+    try {
+      magenta.chords.ChordSymbols.pitches(theChord);
+      this.readyState = true;
+      this.errorHint = '';
+    } catch (e) {
+      this.readyState = false;
+      this.errorHint = '⛔  ' + e;
+    }
+  }
+
+  getTempo(newQPM: string) {
+    this.BL_DEFAULT_QPM = parseInt(newQPM);
   }
 
 }

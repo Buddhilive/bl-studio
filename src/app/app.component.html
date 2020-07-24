@@ -1,1 +1,22 @@
-<router-outlet></router-outlet>
+<mat-toolbar color="primary">
+    <button mat-icon-button (click)="drawer.toggle()">
+   <mat-icon>menu</mat-icon>
+ </button>
+    <span>{{title}}</span>
+    <span class="toolbar-spacer"></span>
+    <button mat-flat-button color="accent">
+   <mat-icon>attach_money</mat-icon> Donations
+ </button>
+</mat-toolbar>
+<mat-drawer-container class="bls-container" [hasBackdrop]="true">
+    <mat-drawer #drawer mode="over" class="bls-container__drawer">
+        <mat-list role="list">
+            <mat-list-item role="listitem" matRipple routerLink="/">
+                <mat-icon mat-list-icon>home</mat-icon> Home
+            </mat-list-item>
+        </mat-list>
+    </mat-drawer>
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>
