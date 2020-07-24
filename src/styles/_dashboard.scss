@@ -22,4 +22,10 @@
             width: 100%;
         }
     }
+    &__about {
+        margin: 30px auto;
+        &--logo {
+            max-width: 250px;
+        }
+    }
 }

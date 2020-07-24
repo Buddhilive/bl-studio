@@ -53,12 +53,35 @@ body {
     color: #000 !important;
 }
 
+.donation-button {
+    text-decoration: none !important;
+}
+
 .bls-container {
     height: calc(100vh - 64px);
     &__drawer {
         min-width: 240px;
         mat-list-item {
             cursor: pointer;
+        }
+    }
+}
+
+.home-wrapper {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    &__root {
+        max-width: calc(100% - 360px);
+        width: 100%;
+    }
+    &__ads {
+        width: 360px;
+        background-color: #fff;
+        &--title {
+            text-align: center;
+            margin: 20px auto;
+            color: #424242;
         }
     }
 }
