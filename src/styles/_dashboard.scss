@@ -1,5 +1,6 @@
 .dashboard {
     margin: 30px auto;
+    width: 100% !important;
     &__card {
         .coming-soon {
             display: flex;
@@ -20,6 +21,7 @@
         }
         &--image {
             width: 100%;
+            max-width: 300px;
         }
     }
     &__about {
