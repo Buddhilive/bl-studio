@@ -53,16 +53,16 @@ body {
     color: #000 !important;
 }
 
-.donation-button {
-    text-decoration: none !important;
-}
-
 .bls-container {
     height: calc(100vh - 64px);
     &__drawer {
         min-width: 240px;
         mat-list-item {
             cursor: pointer;
+            outline: none;
+            &:hover {
+                background-color: lighten($color: #303030, $amount: 10);
+            }
         }
     }
 }
@@ -83,5 +83,17 @@ body {
             margin: 20px auto;
             color: #424242;
         }
+    }
+}
+
+.featured-ad {
+    margin: 10px auto;
+    width: fit-content;
+}
+
+.bls-toolbar {
+    &__button {
+        margin: 0 5px !important;
+        text-decoration: none !important;
     }
 }
