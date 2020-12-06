@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
-  improv_rnn: 'assets/checkpoints/improv_rnn'
+  improv_rnn: 'assets/checkpoints/improv_rnn',
+  drum_groove: 'assets/checkpoints/groovae_4bar',
+  mel_chords: 'assets/checkpoints/mel_chords',
+  drumskit: 'assets/checkpoints/groovae_4bar',
+  onset_frames: 'assets/checkpoints/onset_frames'
 };
 
 /*

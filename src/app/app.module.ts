@@ -22,12 +22,18 @@ import { MatListModule } from '@angular/material/list';
 import { MatRippleModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GlobalVariables } from './shared/global.variables';
+import { TriosProComponent } from './trios-pro/trios-pro.component';
+import { DrumGrooveComponent } from './drum-groove/drum-groove.component';
+import { TonebreakerComponent } from './tonebreaker/tonebreaker.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    TriosComponent
+    TriosComponent,
+    TriosProComponent,
+    DrumGrooveComponent,
+    TonebreakerComponent
   ],
   imports: [
     BrowserModule,
