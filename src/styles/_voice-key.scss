@@ -1,0 +1,12 @@
+.voicekey {
+    max-width: 300px;
+    margin: 20px auto;
+    &__loader {
+        color: yellow;
+        font-size: 22px;
+        margin: 20px auto;
+        mat-spinner {
+            margin: 10px auto;
+        }
+    }
+}

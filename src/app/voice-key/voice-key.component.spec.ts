@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TriosProComponent } from './trios-pro.component';
+import { VoiceKeyComponent } from './voice-key.component';
 
-describe('TriosProComponent', () => {
-  let component: TriosProComponent;
-  let fixture: ComponentFixture<TriosProComponent>;
+describe('VoiceKeyComponent', () => {
+  let component: VoiceKeyComponent;
+  let fixture: ComponentFixture<VoiceKeyComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TriosProComponent ]
+      declarations: [ VoiceKeyComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TriosProComponent);
+    fixture = TestBed.createComponent(VoiceKeyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

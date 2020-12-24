@@ -1,10 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as magenta from '@magenta/music/es6';
-import { PianoRollCanvasVisualizer } from '@magenta/music/es6';
 import { GlobalVariables } from '../shared/global.variables';
-/* import { DDSP } from '@magenta/music/es6/ddsp/';
-import { SPICE } from '@magenta/music/es6/spice'; */
-
 @Component({
   selector: 'app-tonebreaker',
   templateUrl: './tonebreaker.component.html',
@@ -12,21 +8,16 @@ import { SPICE } from '@magenta/music/es6/spice'; */
 })
 export class TonebreakerComponent implements OnInit {
 
-  modelVAEMusic = new magenta.MusicVAE(this.globalVar.MODEL_VAE_MELODY);
-  modelRnn = new magenta.MusicRNN(this.globalVar.MODEL_IMPROV_RNN);
-  modelVAEDrum = new magenta.MusicVAE(this.globalVar.MODEL_VAE_DRUMS);
+  @ViewChild('toneBreakerAudio', { static: false }) audioElement: ElementRef;
+
   ddspModel = new magenta.DDSP('https://storage.googleapis.com/magentadata/js/checkpoints/ddsp/tenor_saxophone');
   spiceModels = new magenta.SPICE('https://tfhub.dev/google/tfjs-model/spice/2/default/1');
-  midiMe = new magenta.OnsetsAndFrames(this.globalVar.MODEL_MIDIME);
-  sampleGenerated: any;
-  /* drumSample: any; */
-  bassSample: any;
-  chordSample: any;
-  fullSong: any;
+
+  AUDIO_ELEMENT: HTMLAudioElement;
+  FULL_SONG: any;
+  uploadData: string;
   BL_DEFAULT_QPM = 220;
   BL_DEFAULT_STEPS = 4;
-  BL_DEFAULT_BARS = 16;
-  BL_DEFAULT_VARIATION = 0.8;
   BL_DEFAULT_CHORDS = ['Em', 'C', 'Am', 'G']; //['C', 'G', 'Am', 'F']; ['Dm', 'Bb', 'F', 'C']
   BL_DEFAULT_MELODY = {
     quantizationInfo: { stepsPerQuarter: this.BL_DEFAULT_STEPS },
@@ -34,90 +25,119 @@ export class TonebreakerComponent implements OnInit {
     tempos: [{ time: 0, qpm: this.BL_DEFAULT_QPM }],
     totalQuantizedSteps: 1
   };
-  audioPlayer = new magenta.SoundFontPlayer('https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus');
+
+  BL_PLAYER_PROGRESS = 0;
+  BL_PLAYER_DURATION = 0;
+
   audioCtx = new AudioContext();
+  readyStateSPICE = false;
+  readyStateDDSP = false;
+  transformButtonActive = false;
+  controlButtonsActive = false;
+  processProgress = false;
+  PROGRESS_DATA = '';
+  playButtonText = 'play_arrow';
 
   constructor(
     private globalVar: GlobalVariables
   ) { }
 
   ngOnInit() {
-    /* this.modelRnn.initialize().then(() => {
-      console.log(this.modelRnn);
-    }); */
-    /* this.modelVAEDrum.initialize().then(() => {
-      console.log('drums loaded');
-    }); */
-    /* this.modelVAEMusic.initialize().then(() => {
-      console.log('drums loaded');
-    }); */
     this.ddspModel.initialize().then(() => {
-      console.log('Namo Buddhaya!');
+      this.readyStateDDSP = true;
     });
     this.spiceModels.initialize().then(() => {
-      console.log('Theruwan Saranai');
+      this.readyStateSPICE = true;
     });
-    /* this.midiMe.initialize().then(() => {
-      console.log('Namo Buddhaya!');
-    }); */
+
   }
 
   async transformAudio(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    let filePath;
-    reader.onload = async (e: any) => {
-      // The file's text will be printed here
-      //console.log(e.target.result);
-      filePath = e.target.result;
-      this.readFileAndProcessAudio(filePath);
-      /* this.fullSong = await this.midiMe.transcribeFromAudioURL(filePath);
-      let sampleSeq = this.fullSong;
-      if (!magenta.sequences.isQuantizedSequence(this.fullSong)) {
-        sampleSeq = magenta.sequences.quantizeNoteSequence(this.fullSong, 1);
+    try {
+      this.audioElement.nativeElement.innerHTML = '';
+      this.uploadData = await this.globalVar.uploadFile(event) as string;
+      /* const sourceElement = document.createElement('source');
+      sourceElement.src = this.uploadData;
+      this.audioElement.nativeElement.appendChild(sourceElement); */
+      this.audioElement.nativeElement.src = this.uploadData;
+      this.PROGRESS_DATA = '😊 Uploaded Successfully!';
+      /* this.readFileAndProcessAudio(data); */
+      if (this.uploadData) {
+        this.transformButtonActive = true;
+      } else {
+        console.log('Oops');
       }
-      sampleSeq.notes.forEach(n => n.velocity = 100);
-      const midiB = magenta.sequenceProtoToMidi(sampleSeq);
-      const blob = new Blob([midiB], { type: 'audio/midi' });
-      const url = URL.createObjectURL(blob);
-      console.log(url);
-      const a = document.createElement('a');
-      const urlForFile = URL.createObjectURL(blob);
-      a.href = urlForFile;
-      a.download = 'buddhilive_voicekey' + Date.now() + '.midi';
-      a.click();
-      console.log(this.fullSong); */
-    };
-    reader.readAsDataURL(file);
-    /* this.readFileAndProcessAudio('assets/v.mp3'); */
+      this.controlButtonsActive = false;
+    } catch (errorMsg) {
+      alert('No upload file found! \n' + errorMsg);
+    }
   }
 
-  async readFileAndProcessAudio(src: string) {
-    const audioFile = await fetch(src);
-    const arrayBuffer = await audioFile.arrayBuffer();
-    const audioBuffer = await this.audioCtx.decodeAudioData(arrayBuffer);
-    const audioFeatures = await this.spiceModels.getAudioFeatures(audioBuffer);
-    console.log('audio_features', audioFeatures);
-    console.log('audio_buffer', audioBuffer, arrayBuffer);
-    //this.hzToNotes(audioFeatures);
-    this.synthesizeAudio(audioFeatures);
+  async readFileAndProcessAudio() {
+    if (this.audioElement.nativeElement.duration <= 15) {
+      this.PROGRESS_DATA = '🎵 Tonebreaker in Progress...';
+      this.processProgress = true;
+      const audioFile = await fetch(this.uploadData);
+      const arrayBuffer = await audioFile.arrayBuffer();
+      const audioBuffer = await this.audioCtx.decodeAudioData(arrayBuffer);
+      const audioFeatures = await this.spiceModels.getAudioFeatures(audioBuffer);
+      console.log('audio_features', audioFeatures);
+      console.log('audio_buffer', audioBuffer, arrayBuffer);
+      //this.hzToNotes(audioFeatures);
+      this.synthesizeAudio(audioFeatures);
+    } else {
+      alert('Oops! Duration is greater than 15 seconds! This will crash your browser \nCurrent Duration: ' +
+        this.toTime(this.audioElement.nativeElement.duration));
+      this.PROGRESS_DATA = '😢 Upload an audio less than 15 seconds duration';
+    }
   }
 
   async synthesizeAudio(audioFeatures) {
     const toneTransferredAudioData: Float32Array = await this.ddspModel.synthesize(audioFeatures);
     console.log(toneTransferredAudioData);
-    const dataview = this.encodeWAV(toneTransferredAudioData, this.audioCtx.sampleRate);
-    const blob = new Blob([dataview], { type: 'audio/wav' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const urlForFile = URL.createObjectURL(blob);
-    a.href = urlForFile;
-    a.download = 'buddhilive_tonebreaker' + Date.now() + '.wav';
-    a.click();
+    this.FULL_SONG = this.encodeWAV(toneTransferredAudioData, this.audioCtx.sampleRate);
+    const audioBlob = new Blob([this.FULL_SONG], { type: 'audio/wav' });
+    const audioURL = URL.createObjectURL(audioBlob);
+    this.audioElement.nativeElement.innerHTML = '';
+    this.AUDIO_ELEMENT = new Audio(audioURL);
+
+    /* const sourceElement = document.createElement('source');
+    sourceElement.src = audioURL;
+    this.audioElement.nativeElement.appendChild(sourceElement); */
+    this.audioElement.nativeElement.src = audioURL;
+    console.log(this.AUDIO_ELEMENT, this.audioElement);
+    /* this.FULL_SONG = await this.encodeRaw(toneTransferredAudioData); */
 
     /* this.ddspModel.dispose(); */
+    this.controlButtonsActive = true;
+    this.processProgress = false;
+    this.PROGRESS_DATA = '🎷 Music Generated!';
   }
 
+  /**
+   * Encode Array data to RAW file format
+   * @param float32Array Float32Array Object
+   */
+  async encodeRaw(float32Array) {
+    const output = new Uint8Array(float32Array.length);
+
+    for (let i = 0; i < float32Array.length; i++) {
+      let tmp = Math.max(-1, Math.min(1, float32Array[i]));
+      tmp = tmp < 0 ? (tmp * 0x8000) : (tmp * 0x7FFF);
+      tmp = tmp / 256;
+      output[i] = tmp + 128;
+    }
+
+    console.log(output);
+
+    const midiX = new Blob([output], { type: 'application/octet-binary' });
+  }
+
+
+  /**
+   * Convert Hz in to MIDI Note
+   * @param audioData AudioFeatures from SPICE Model
+   */
   hzToNotes(audioData) {
     this.BL_DEFAULT_MELODY.notes = [];
     const freqHz: Array<any> = audioData.f0_hz;
@@ -133,6 +153,10 @@ export class TonebreakerComponent implements OnInit {
     });
   }
 
+  /**
+   * Encode output of DDSP Model to WAV format
+   * This code is obtained from Google's demo project
+   */
   encodeWAV(samples: Float32Array, sampleRate: number) {
     const buffer = new ArrayBuffer(44 + samples.length * 2);
     const view = new DataView(buffer);
@@ -171,169 +195,127 @@ export class TonebreakerComponent implements OnInit {
     return view;
   }
 
+  /**
+   * This code is obtained from Google's demo project
+   * @param view Dataview object
+   * @param offset Array offset
+   * @param str String
+   */
   writeString(view: DataView, offset: number, str: string) {
     for (let i = 0; i < str.length; i++) {
       view.setUint8(offset + i, str.charCodeAt(i));
     }
   }
 
-  floatTo16BitPCM(
-    output: DataView, offset: number, input: Float32Array) {
+  /**
+   * This code is obtained from Google's demo project
+   */
+  floatTo16BitPCM(output: DataView, offset: number, input: Float32Array) {
     for (let i = 0; i < input.length; i++, offset += 2) {
       const s = Math.max(-1, Math.min(1, input[i]));
       output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
     }
   }
 
-
-  async generateLead() {
-    const xMelody = await this.modelRnn.continueSequence(
-      this.BL_DEFAULT_MELODY, this.BL_DEFAULT_STEPS * this.BL_DEFAULT_BARS, this.BL_DEFAULT_VARIATION, this.BL_DEFAULT_CHORDS
-    );
-    this.sampleGenerated = magenta.sequences.mergeInstruments(xMelody);
-    console.log(this.sampleGenerated);
-    this.sampleGenerated.notes.map((note, index) => {
-      this.sampleGenerated.notes[index].program = 26;
-    });
-    console.log(this.sampleGenerated);
-    //this.generateBass(this.sampleGenerated);
-    this.bassSample = this.sampleGenerated;
-  }
-
-  async generateBass(xNoteSequence) {
-    /* const xMelody = await this.modelVAEMusic.sample(
-      (this.BL_DEFAULT_BARS / this.BL_DEFAULT_STEPS) / 2, this.BL_DEFAULT_VARIATION,
-      { chordProgression: this.BL_DEFAULT_CHORDS, extraControls: null },
-      this.BL_DEFAULT_STEPS, this.BL_DEFAULT_QPM
-    );
-    console.log(this.sampleGenerated, xMelody);
-    this.concatenateNoteSequence(xMelody); */
-    const xMelody = await this.modelVAEMusic.similar(
-      xNoteSequence, 2, 0.5, this.BL_DEFAULT_VARIATION,
-      { chordProgression: this.BL_DEFAULT_CHORDS, extraControls: null },
-    );
-    this.concatenateNoteSequence(xMelody);
-    /* this.bassSample = magenta.sequences.mergeInstruments(xMelody);
-    console.log(this.bassSample);
-    this.bassSample.notes.map((note, index) => {
-      this.bassSample.notes[index].program = 26;
-    });
-    console.log(this.bassSample); */
-  }
-
-  /* async generateDrum() {
-    const xDrum = await this.modelVAEDrum.sample(
-      1, this.BL_DEFAULT_VARIATION, null, this.BL_DEFAULT_STEPS, this.BL_DEFAULT_QPM
-    );
-    this.drumSample = magenta.sequences.mergeInstruments(
-      magenta.sequences.quantizeNoteSequence(xDrum[0], 4)
-    );
-    console.log(this.drumSample);
-  }
- */
-  generateChords() {
-    this.chordSample = {
-      quantizationInfo: { stepsPerQuarter: this.BL_DEFAULT_STEPS },
-      notes: [],
-      tempos: [{ time: 0, qpm: this.BL_DEFAULT_QPM }],
-      totalQuantizedSteps: 1
-    };
-    this.BL_DEFAULT_CHORDS.map(async (xChord, xIndex) => {
-      const xNotes = magenta.chords.ChordSymbols.pitches(xChord);
-      xNotes.map((yNote) => {
-        const zNotes = {
-          pitch: yNote + 60,
-          quantizedStartStep: xIndex * 16 + 1,
-          quantizedEndStep: (xIndex + 1) * 16
-        };
-        console.log(yNote, zNotes);
-        this.chordSample.notes.push(zNotes);
-      });
-      this.chordSample = magenta.sequences.mergeInstruments(this.chordSample);
-      this.chordSample.notes.map((note, index) => {
-        this.chordSample.notes[index].program = 4;
-      });
-      console.log(this.chordSample);
-      console.log(xChord, xNotes);
-    });
-  }
-
-  async concatenateNoteSequence(xNoteSequence: Array<any>) {
-    this.bassSample = magenta.sequences.clone(this.sampleGenerated);
-    let numSteps = this.sampleGenerated.totalQuantizedSteps;
-    xNoteSequence.map((xNotes, xIndex) => {
-      if (xIndex >= 0) {
-        xNotes.notes.map((yNote) => {
-          yNote.quantizedStartStep += numSteps;
-          yNote.quantizedEndStep += numSteps;
-          this.bassSample.notes.push(yNote);
-          console.log(yNote, xIndex);
-        });
-        numSteps += xNotes.totalQuantizedSteps;
-      }
-      console.log(xNotes);
-    });
-    this.bassSample.totalQuantizedSteps = numSteps;
-    this.bassSample = magenta.sequences.mergeInstruments(this.bassSample);
-    console.log(this.bassSample);
-    this.bassSample.notes.map((note, index) => {
-      this.bassSample.notes[index].program = 81;
-      console.log(this.bassSample.notes[index].program);
-    });
-    console.log(this.bassSample);
-  }
-
-  async mergeNoteSequence() {
-    try {
-      this.fullSong = magenta.sequences.clone(this.chordSample);
-
-      /* if (this.sampleGenerated !== undefined) {
-        await this.sampleGenerated.notes.map((xNotes) => {
-          this.fullSong.notes.push(xNotes);
-        });
-      } */
-
-      if (this.bassSample !== undefined) {
-        await this.bassSample.notes.map((xNotes) => {
-          this.fullSong.notes.push(xNotes);
-        });
-      }
-
-      /* if (this.drumSample !== undefined) {
-        await this.drumSample.notes.map((xNotes) => {
-          this.fullSong.notes.push(xNotes);
-        });
-      } */
-      console.log(this.fullSong);
-
-    } catch (error) {
-      console.log(error);
-    }
+  downloadSample() {
+    this.globalVar.download(this.FULL_SONG, 'audio/wav', 'tonebreaker');
   }
 
   playMusic() {
-    //console.log(this.sampleGenerated.notes);
-    if (this.audioPlayer.isPlaying()) {
-      this.audioPlayer.stop();
-      console.log('Done', this.audioPlayer.isPlaying());
+    if (this.audioElement.nativeElement.paused) {
+      console.log('paused');
+      this.audioElement.nativeElement.play();
+      this.playButtonText = 'pause';
     } else {
-      this.startPlayer();
+      console.log('paly');
+      this.audioElement.nativeElement.pause();
+      this.playButtonText = 'play_arrow';
     }
   }
 
-  startPlayer() {
-    this.audioPlayer.start(this.fullSong).then(() => {
-      this.startPlayer();
-    });
-    /* this.audioPlayer.start(this.BL_DEFAULT_MELODY).then(() => {
-      this.startPlayer();
-    }); */
+  showPlayerProgree(progressData: any) {
+    /* console.log(progressData); */
+    const currentTime = progressData.target.currentTime;
+    this.BL_PLAYER_DURATION = progressData.target.duration;
+    this.BL_PLAYER_PROGRESS = Math.round((currentTime / this.BL_PLAYER_DURATION) * 100);
+    if (this.BL_PLAYER_DURATION) {
+      this.PROGRESS_DATA = this.toTime(currentTime) + ' / ' + this.toTime(this.BL_PLAYER_DURATION);
+    }
+    if (currentTime === this.BL_PLAYER_DURATION && this.BL_PLAYER_PROGRESS === 100) {
+      this.playButtonText = 'play_arrow';
+    }
   }
 
-  playSample() {
-    this.audioPlayer.start(this.sampleGenerated).then(() => {
-      this.audioPlayer.stop();
+  onPlayerSeek() {
+    console.log(this.audioElement, this.BL_PLAYER_PROGRESS, (this.BL_PLAYER_PROGRESS / 100) * this.BL_PLAYER_DURATION);
+    this.audioElement.nativeElement.currentTime = (this.BL_PLAYER_PROGRESS / 100) * this.BL_PLAYER_DURATION;
+  }
+
+  stopPlay() {
+    this.audioElement.nativeElement.pause();
+    this.audioElement.nativeElement.currentTime = 0;
+    this.playButtonText = 'play_arrow';
+  }
+
+  toTime(timeStamp) {
+    const minuteTime = Math.round(timeStamp / 60);
+    const secondsTime = Math.round(timeStamp % 60);
+    let finalTime;
+    if (secondsTime < 10) {
+      finalTime = minuteTime + ':0' + secondsTime;
+    } else {
+      finalTime = minuteTime + ':' + secondsTime;
+    }
+    return finalTime;
+  }
+
+  async recordAudio() {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((mediaStreamObj) => {
+      /* if ('srcObject' in this.audioElement.nativeElement) {
+        this.audioElement.nativeElement.srcObject = mediaStreamObj;
+        console.log('true', this.audioElement.nativeElement.srcObject);
+      } else {
+        this.audioElement.nativeElement.src = URL.createObjectURL(mediaStreamObj);
+        console.log('else', this.audioElement.nativeElement.src);
+      } */
+
+      /* this.audioElement.nativeElement.onloadedmetadata = (ev) => {
+        console.log('Audio Loaded!');
+      }; */
+
+      const dataArray = [];
+      const mediaRecorder = new MediaRecorder(mediaStreamObj);
+
+      mediaRecorder.start();
+
+      mediaRecorder.onstart = (ev) => {
+        alert('Only 15 secods will be recorded! Larger files will crash your Browser.');
+        this.PROGRESS_DATA = '🎤 Recording...';
+        console.log(ev);
+      };
+
+      setTimeout(() => {
+        mediaRecorder.stop();
+        console.log('Stoped');
+      }, 15000);
+
+      mediaRecorder.onstop = (ev) => {
+        mediaRecorder.stream.getAudioTracks().map(track => track.stop());
+        this.PROGRESS_DATA = '📼 Recorded Successfully';
+        console.log(ev, mediaRecorder.stream.getAudioTracks());
+        const audioData = new Blob(dataArray, { type: 'audio/mp3' });
+        this.uploadData = URL.createObjectURL(audioData);
+        this.audioElement.nativeElement.src = this.uploadData;
+        this.transformButtonActive = true;
+        this.controlButtonsActive = true;
+      };
+
+      mediaRecorder.ondataavailable = (ev) => {
+        console.log(ev);
+        dataArray.push(ev.data);
+      };
     });
+    console.log();
   }
 
 }

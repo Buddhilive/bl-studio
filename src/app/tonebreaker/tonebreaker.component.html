@@ -1,7 +1,51 @@
-<p>tonebreaker works!</p>
-<button mat-raised-button (click)="generateLead()">Lead</button>
-<button mat-raised-button (click)="playSample()">Bass</button>
-<button mat-raised-button (click)="generateChords()">Chords</button>
-<button mat-raised-button (click)="mergeNoteSequence()">Merge</button>
-<button mat-raised-button (click)="playMusic()">Play</button>
-<input type="file" (change)="transformAudio($event)" />
+<div class="container tonebreaker">
+    <div class="row tonebreaker__loader" *ngIf="!readyStateSPICE || !readyStateDDSP">
+        <div class="col-md-12">
+            <mat-spinner></mat-spinner> Intializing Model...
+        </div>
+    </div>
+    <div class="tonebreaker__wrapper" *ngIf="readyStateSPICE && readyStateDDSP">
+        <div class="col-lg-12 col-md-12">
+            <input class="tonebreaker__wrapper--uploader" type="file" (change)="transformAudio($event)" #uploadInput/>
+            <button mat-raised-button (click)="uploadInput.click()" color="primary">Upload Audio</button>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <audio class="tonebreaker__wrapper--audio" controls #toneBreakerAudio (timeupdate)="showPlayerProgree($event)"></audio>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 tonebreaker__player--slider">
+                <mat-slider min="0" max="100" step="1" [(value)]="BL_PLAYER_PROGRESS" color="primary" (change)="onPlayerSeek()">
+                </mat-slider>
+            </div>
+        </div>
+        <div class="row tonebreaker__log">
+            <div class="col-lg-12 col-md-12">
+                <p class="tonebreaker__log--message" [class.progress]="processProgress">{{PROGRESS_DATA}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <button mat-fab color="primary" (click)="readFileAndProcessAudio()" [disabled]="!transformButtonActive">
+                  <mat-icon>music_note</mat-icon>
+                </button>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <button mat-fab color="accent" (click)="playMusic()" [disabled]="!controlButtonsActive">
+                  <mat-icon>{{playButtonText}}</mat-icon>
+                </button>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <button mat-fab color="warn" (click)="stopPlay()" [disabled]="!controlButtonsActive">
+                  <mat-icon>stop</mat-icon>
+                </button>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <button mat-fab color="primary" (click)="downloadSample()" [disabled]="!controlButtonsActive">
+                  <mat-icon>cloud_download</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
