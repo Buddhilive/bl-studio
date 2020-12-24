@@ -1,0 +1,55 @@
+.tonebreaker {
+    max-width: 400px;
+    margin: 20px auto;
+    &__loader {
+        color: yellow;
+        font-size: 22px;
+        margin: 20px auto;
+        mat-spinner {
+            margin: 10px auto;
+        }
+    }
+    &__wrapper {
+        margin-top: 15px;
+        &--uploader {
+            display: none !important;
+        }
+        &--audio {
+            display: none;
+        }
+    }
+    &__log {
+        mat-progress-bar {
+            color: orange;
+        }
+        &--message {
+            text-align: right;
+            margin: 0px 2px 26px;
+            &.progress {
+                color: greenyellow;
+                background-color: transparent;
+                animation: blink 1s linear infinite;
+            }
+        }
+    }
+    &__player {
+        &--slider {
+            margin-top: 15px;
+            mat-slider {
+                width: 100%
+            }
+        }
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: .5;
+    }
+    100% {
+        opacity: 1;
+    }
+}

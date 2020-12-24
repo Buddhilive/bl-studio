@@ -1,1 +1,3 @@
 python checkpoint_downloader.py https://storage.googleapis.com/download.magenta.tensorflow.org/tfjs_checkpoints/music_rnn/drum_kit_rnn my-checkpoints/
+
+python checkpoint_downloader.py https://storage.googleapis.com/magentadata/js/checkpoints/ddsp/tenor_saxophone/ src/assets/checkpoints/ddsp

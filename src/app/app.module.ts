@@ -21,13 +21,21 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatRippleModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { GlobalVariables } from './shared/global.variables';
+import { DrumGrooveComponent } from './drum-groove/drum-groove.component';
+import { TonebreakerComponent } from './tonebreaker/tonebreaker.component';
+import { VoiceKeyComponent } from './voice-key/voice-key.component';
+import { AdsenseModule } from 'ng2-adsense';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    TriosComponent
+    TriosComponent,
+    DrumGrooveComponent,
+    TonebreakerComponent,
+    VoiceKeyComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +54,9 @@ import { GlobalVariables } from './shared/global.variables';
     MatSidenavModule,
     MatListModule,
     MatRippleModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    AdsenseModule.forRoot()
   ],
   providers: [GlobalVariables],
   bootstrap: [AppComponent]

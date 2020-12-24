@@ -18,6 +18,10 @@ export class AppComponent {
             this.title = 'BL Studio | Melody';
             break;
 
+          case '/voicekey':
+            this.title = 'BL Studio | Voice Key';
+            break;
+
           default:
             this.title = 'BL Studio';
             break;
