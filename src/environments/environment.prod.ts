@@ -3,7 +3,7 @@ export const environment = {
   improv_rnn: 'https://storage.googleapis.com/magentadata/js/checkpoints/music_rnn/chord_pitches_improv',
   drum_groove: 'https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/groovae_4bar',
   gan_synth: 'https://storage.googleapis.com/magentadata/js/checkpoints/gansynth/acoustic_only',
-  mel_chords: 'assets/checkpoints/mel_chords',
-  drumskit: 'assets/checkpoints/groovae_4bar',
-  onset_frames: 'assets/checkpoints/onset_frames'
+  mel_chords: 'https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/mel_chords',
+  drumskit: 'https://storage.googleapis.com/magentadata/js/checkpoints/music_vae/groovae_4bar',
+  onset_frames: 'https://storage.googleapis.com/magentadata/js/checkpoints/transcription/onsets_frames_uni_q2'
 };
