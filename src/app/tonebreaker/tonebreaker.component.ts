@@ -10,8 +10,8 @@ export class TonebreakerComponent implements OnInit {
 
   @ViewChild('toneBreakerAudio', { static: false }) audioElement: ElementRef;
 
-  ddspModel = new magenta.DDSP('https://storage.googleapis.com/magentadata/js/checkpoints/ddsp/tenor_saxophone');
-  spiceModels = new magenta.SPICE('https://tfhub.dev/google/tfjs-model/spice/2/default/1');
+  ddspModel = new magenta.DDSP(this.globalVar.MODEL_DDSP_SAX);
+  spiceModels = new magenta.SPICE(this.globalVar.MODEL_SPICE);
 
   AUDIO_ELEMENT: HTMLAudioElement;
   FULL_SONG: any;

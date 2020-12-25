@@ -4,15 +4,20 @@
             <mat-spinner></mat-spinner> Intializing Model...
         </div>
     </div>
-    <div class="row improvrnn__loader" *ngIf="!readyStateRNN || !readyStateVAE">
+    <!-- <div class="row improvrnn__loader" *ngIf="!readyStateRNN || !readyStateVAE">
         <div class="col-md-12">
             <ng-adsense [adClient]="'ca-pub-9435032914308988'" [adSlot]="5595610335" [display]="'inline-block'" [width]="300" [height]="250">
             </ng-adsense>
         </div>
-    </div>
+    </div> -->
 
     <div class="improvrnn__wrapper" *ngIf="readyStateRNN && readyStateVAE">
-        <p>Chord Progression</p>
+        <p>
+            Chord Progression
+            <a href="https://www.buddhilive.com/p/chord-progressions.html" class="imporovrnn__wrapper--info" target="_blank">
+                <mat-icon>help_outline</mat-icon>
+            </a>
+        </p>
         <div class="row improvrnn__chords" #chordProgression>
             <div class="col-md-3" *ngFor="let chords of BL_DEFAULT_CHORDS; let i = index">
                 <mat-form-field class="improvrnn__chords--key" appearance="fill">

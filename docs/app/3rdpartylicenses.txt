@@ -89,17 +89,11 @@ THE SOFTWARE.
 
 @angular/material/card
 
-@angular/material/core
-
 @angular/material/form-field
 
 @angular/material/icon
 
-@angular/material/list
-
 @angular/material/progress-spinner
-
-@angular/material/sidenav
 
 @angular/material/slider
 

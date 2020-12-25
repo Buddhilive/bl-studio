@@ -1,17 +1,17 @@
-<mat-toolbar color="primary" class="bls-toolbar">
-    <button mat-icon-button (click)="drawer.toggle()">
-   <mat-icon>menu</mat-icon>
+<mat-toolbar class="bls-toolbar">
+    <button mat-icon-button (click)="navigateTo()" *ngIf="!isHome">
+   <mat-icon>arrow_back</mat-icon>
  </button>
     <span>{{title}}</span>
     <span class="toolbar-spacer"></span>
-    <a mat-flat-button color="accent" href="https://www.buddhilive.com/p/donations.html" target="_blank" class="bls-toolbar__button">
+    <!-- <a mat-flat-button color="accent" href="https://www.buddhilive.com/p/donations.html" target="_blank" class="bls-toolbar__button">
         Sponsor
     </a>
     <a mat-mini-fab color="accent" matTooltip="Help" class="bls-toolbar__button" href="https://www.buddhilive.com/search/label/BL%20Studio?&max-results=7" target="_blank">
         <mat-icon>help_outline</mat-icon>
-    </a>
+    </a> -->
 </mat-toolbar>
-<mat-drawer-container class="bls-container" [hasBackdrop]="true">
+<!-- <mat-drawer-container class="bls-container" [hasBackdrop]="true">
     <mat-drawer #drawer mode="over" class="bls-container__drawer">
         <mat-list role="list">
             <mat-list-item role="listitem" matRipple routerLink="/" (click)="drawer.toggle()">
@@ -25,4 +25,5 @@
     <mat-drawer-content>
         <router-outlet></router-outlet>
     </mat-drawer-content>
-</mat-drawer-container>
+</mat-drawer-container> -->
+<router-outlet></router-outlet>
