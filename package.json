@@ -4,7 +4,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve --port=5566 -o",
-        "build": "ng build --prod --output-path docs",
+        "build": "ng build --prod --output-path docs/app --base-href /app/",
         "test-build": "ng build --prod --output-path docs --base-href /<project_name>/",
         "test": "ng test",
         "lint": "ng lint",

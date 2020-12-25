@@ -8,6 +8,7 @@ import { Router, NavigationEnd } from '@angular/router';
 })
 export class AppComponent {
   title = 'BL Studio';
+  isHome = true;
   constructor(private router: Router) {
     router.events.subscribe((val) => {
       //console.log(val);
@@ -22,12 +23,25 @@ export class AppComponent {
             this.title = 'BL Studio | Voice Key';
             break;
 
+            case '/tonebreaker':
+              this.title = 'BL Studio | ToneBreaker';
+              break;
+
           default:
             this.title = 'BL Studio';
             break;
         }
+        if(navUrl !== '/') {
+          this.isHome = false;
+        }
+        //console.log(navUrl);
       }
       //console.log(val instanceof NavigationEnd);
     });
+  }
+
+  navigateTo(){
+    this.router.navigate(['/']);
+    this.isHome = true;
   }
 }

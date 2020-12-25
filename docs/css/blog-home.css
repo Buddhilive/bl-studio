@@ -1,0 +1,54 @@
+body {
+  padding-top: 56px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.buddhilive {
+  height: calc(100vh - 90px);
+  max-width: 100% !important;
+}
+
+.buddhilive__nav {
+  background-color: #ffeb3b;
+}
+
+.buddhilive__nav .nav-link {
+  color: #000 !important;
+  font-weight: 700;
+}
+
+.buddhilive__nav--logo {
+  width: 150px;
+  height: auto;
+}
+
+.buddhilive__sidebar {
+  height: calc(100vh - 90px);
+  overflow-y: auto;
+}
+
+.buddhilive__sidebar--details .bold {
+  font-weight: 700;
+}
+
+.buddhilive__sidebar--details .bold span {
+  font-style: italic;
+}
+
+.buddhilive__sidebar--details .card-body {
+  text-align: justify;
+}
+
+.buddhilive__footer {
+  padding: 5px 0;
+}
+
+.buddhilive__router {
+  padding: 0;
+}
+
+.buddhilive__router--iframe {
+  width: 100%;
+  height: 100%;
+}
+/*# sourceMappingURL=blog-home.css.map */

@@ -6,6 +6,8 @@ export class GlobalVariables {
   MODEL_DRUM_GROOVE = environment.drum_groove;
   MODEL_VAE_DRUMS = environment.drumskit;
   MODEL_MIDIME = environment.onset_frames;
+  MODEL_SPICE = environment.spice;
+  MODEL_DDSP_SAX = environment.ddsp_sax;
 
   /**
    * Makes data downloadable
